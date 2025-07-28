@@ -64,7 +64,7 @@ function App() {
         }}
       >
         <AuthProvider>
-          <Router>
+          <Router basename='/welcome'>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={

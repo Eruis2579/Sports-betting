@@ -138,7 +138,11 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm font-medium">Account Balance</p>
-                <p className="text-2xl font-bold text-white">$1,250.00</p>
+                <p className="text-2xl font-bold text-white">
+                  {
+                    user?.connected ? `$${user?.balance.toLocaleString('en-US')}` : 'Not Connected'
+                  }
+                </p>
               </div>
               <div className="bg-emerald-500/20 p-3 rounded-xl">
                 <DollarSign className="w-6 h-6 text-emerald-400" />

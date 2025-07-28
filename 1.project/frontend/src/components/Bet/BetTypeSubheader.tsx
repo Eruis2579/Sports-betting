@@ -1,5 +1,8 @@
 import React from 'react';
 import { Button, Space } from 'antd';
+import { Plus } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { getContextId } from '../../services/betService';
 
 export interface BetType {
   id: string;
@@ -17,6 +20,13 @@ export const BetTypeSubheader: React.FC<BetTypeSubheaderProps> = ({
   activeBetType,
   onBetTypeChange
 }) => {
+  const {user} = useAuth();
+
+  const handleConnect = async () => {
+    const contextId = await getContextId();
+    const url = `https://ui.sharpsports.io/link/${contextId}/region/BRGN_f61b55fe42e14270a9be3788f9c38b06/login`
+    window.location.href = url;
+  };
   return (
     <div className="bg-slate-700 border-b border-slate-600 px-6 py-3 sticky top-16 z-30">
       <div className="flex items-center justify-between">
@@ -26,11 +36,10 @@ export const BetTypeSubheader: React.FC<BetTypeSubheaderProps> = ({
               key={betType.id}
               type={activeBetType === betType.id ? 'primary' : 'default'}
               onClick={() => onBetTypeChange(betType.id)}
-              className={`font-medium ${
-                activeBetType === betType.id
-                  ? 'bg-emerald-600 border-emerald-600 text-white'
-                  : 'bg-slate-600 border-slate-500 text-gray-300 hover:bg-slate-500 hover:border-slate-400'
-              }`}
+              className={`font-medium ${activeBetType === betType.id
+                ? 'bg-emerald-600 border-emerald-600 text-white'
+                : 'bg-slate-600 border-slate-500 text-gray-300 hover:bg-slate-500 hover:border-slate-400'
+                }`}
               style={{
                 background: activeBetType === betType.id ? '#059669' : '#475569',
                 borderColor: activeBetType === betType.id ? '#059669' : '#64748b',
@@ -41,17 +50,23 @@ export const BetTypeSubheader: React.FC<BetTypeSubheaderProps> = ({
             </Button>
           ))}
         </Space>
-        
-        <Button 
-          type="primary"
-          className="bg-orange-500 hover:bg-orange-600 border-orange-500 font-semibold"
-          style={{ 
-            background: '#f97316',
-            borderColor: '#f97316'
-          }}
-        >
-          CONTINUE →
-        </Button>
+
+        {
+          !user?.connected && (
+            <Button
+              type="primary"
+              className="flex items-center bg-orange-500 hover:bg-orange-600 border-orange-500 font-semibold"
+              style={{
+                background: '#f97316',
+                borderColor: '#f97316'
+              }}
+              onClick={handleConnect}
+            >
+              <Plus className="w-4 h-4" />
+              Connect
+            </Button>
+          )
+        }
       </div>
     </div>
   );

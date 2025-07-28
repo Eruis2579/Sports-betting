@@ -1,4 +1,4 @@
-import { LogOut, User, TrendingUp, DollarSign, Trophy, Activity, History, Settings, ChevronLeft, ChevronRight, Zap, Plus } from 'lucide-react';
+import { LogOut, User, History, Settings, Zap, Wallet } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,10 +25,20 @@ export default function () {
                         </div>
 
                         <div className="flex items-center space-x-4">
+                            {
+                                user?.connected && (
+                                    <div className="flex items-center space-x-2 text-white ">
+                                        <Wallet className="w-5 h-5 text-[#24A556] w-10 h-10 bg-white/10  rounded-lg" />
+                                        <span>
+                                            $ {user?.balance.toLocaleString('en-US')}
+                                        </span>
+                                    </div>
+                                )
+                            }
                             <div className="flex items-center space-x-2 text-white">
                                 <User className="w-5 h-5" />
                                 <span className="hidden md:block">
-                                    Welcome, {user?.firstName} {user?.lastName}
+                                    {user?.firstName} {user?.lastName}
                                 </span>
                             </div>
 

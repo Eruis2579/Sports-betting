@@ -7,12 +7,17 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  connected: boolean;
+  balance: number;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  isLoading: boolean;
+  isLoading: {
+    page: boolean;
+    auth: boolean;
+  };
   isAuthenticated: boolean;
   login: (credentials: { email: string; password: string }) => Promise<void>;
   register: (userData: {
@@ -43,7 +48,10 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState({
+    page: true,
+    auth: false,
+  });
 
   const isAuthenticated = !!user && !!token;
 
@@ -66,7 +74,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setToken(null);
         setUser(null);
       } finally {
-        setIsLoading(false);
+        setIsLoading(prev=>({
+          ...prev,
+          page: false
+        }));
       }
     };
 
@@ -75,7 +86,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: { email: string; password: string }): Promise<void> => {
     try {
-      setIsLoading(true);
+      setIsLoading(prev=>({
+        ...prev,
+        auth: true
+      }));
       const response: AuthResponse = await authService.login(credentials);
 
       setToken(response.token);
@@ -86,7 +100,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.SM.error(error as string);
       throw error;
     } finally {
-      setIsLoading(false);
+      setIsLoading(prev=>({
+        ...prev,
+        auth: false
+      }));
     }
   };
 
@@ -98,7 +115,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string;
   }): Promise<void> => {
     try {
-      setIsLoading(true);
+      setIsLoading(prev=>({
+        ...prev,
+        auth: true
+      }));
       const response: AuthResponse = await authService.register(userData);
 
       setToken(response.token);
@@ -109,7 +129,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.SM.error(error as string);
       throw error;
     } finally {
-      setIsLoading(false);
+      setIsLoading(prev=>({
+        ...prev,
+        auth: false
+      }));
     }
   };
 

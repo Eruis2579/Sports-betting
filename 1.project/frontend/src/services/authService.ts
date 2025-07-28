@@ -14,6 +14,8 @@ export interface AuthResponse {
         email: string;
         firstName: string;
         lastName: string;
+        connected: boolean;
+        balance: number;
     };
 }
 
